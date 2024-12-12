@@ -1,6 +1,13 @@
 # AoC2024
 
-Advent of Code 2024
+
+```
+   ___     __              __         ___  _____        __   
+  / _ |___/ /  _____ ___  / /_  ___  / _/ / ___/__  ___/ /__ 
+ / __ / _  / |/ / -_) _ \/ __/ / _ \/ _/ / /__/ _ \/ _  / -_)
+/_/ |_\_,_/|___/\__/_//_/\__/  \___/_/   \___/\___/\_,_/\__/ 
+                                                             
+```
 
 Day 6 part 2 was the first puzzle where the answer wasn't instantaneously solvable with the right algo. I had some troubles with the python negative index pitfall.
 
