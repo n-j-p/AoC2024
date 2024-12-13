@@ -18,4 +18,4 @@ sample_input = ['Button A: X+94, Y+34',
 
 
 assert day13.part2(sample_input, VERBOSE = True)[0] == 480
-assert list(day13.part2(sample_input, VERBOSE = True)[1].keys()) == [0,2]
+assert list(day13.part2(sample_input, VERBOSE = True, C = day13.C)[1].keys()) == [1,3]
