@@ -3,6 +3,15 @@ import euclid
 a = 94
 b = 22
 n = 8400
+
+# euclid.solveLinearDiophantine is from my project euler functions.
+# def solveLinearDiophantine(a,b,n=1,return_increments=False):
+#     '''Solves (finds x,y) for the linear Diophantine equation ax+by=n.
+#    If return_increments, solveLinearDiophantine also returns increments for
+#    the full complement of solutions, i.e. if
+#    x,y,d,e = solveLinearDiophantine(a,b,n,True),
+#    then a(x+kd) + b(y+ke) = n for any integral k.'''
+
 x,y,d,e = euclid.solveLinearDiophantine(a, b, n, True)
 #print(x,y,d,e)
 # Here we have ax + by = n
