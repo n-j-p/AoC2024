@@ -155,7 +155,13 @@ def part2(inp_, VERBOSE = False, C = 0):
         all_solns[i] = (A,B)
         c += 3*A + B
     return c, all_solns
+
+
+
+
+
 C = 10000000000000
+
 if __name__ == '__main__':
     print(f'Part 1 answer is {part2(actual_input)[0]}')
     print(f'Part 2 answer is {part2(actual_input, C = C)[0]}')
