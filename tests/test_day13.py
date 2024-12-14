@@ -16,6 +16,7 @@ sample_input = ['Button A: X+94, Y+34',
     'Button B: X+27, Y+71',
     'Prize: X=18641, Y=10279']
 
-
-assert day13.part2(sample_input, VERBOSE = True)[0] == 480
-assert list(day13.part2(sample_input, VERBOSE = True, C = day13.C)[1].keys()) == [1,3]
+def test_part1():
+    assert day13.part2(sample_input, VERBOSE = True)[0] == 480
+def test_part2():
+    assert list(day13.part2(sample_input, VERBOSE = True, C = day13.C)[1].keys()) == [1,3]

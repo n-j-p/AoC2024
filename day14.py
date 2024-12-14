@@ -1,3 +1,11 @@
+# Usage: py day14.py 10000
+
+import sys
+if len(sys.argv) == 1:
+	N = 100
+else:
+	N = int(sys.argv[1])
+
 class Robot():
 	def __init__(self, init_str):
 		self.init_str = init_str
@@ -34,31 +42,25 @@ class Space():
 		qNE = [x.p for i,x in enumerate(self.robots) if x.p[0] > self.R//2 and x.p[1] < self.C//2]
 		qSW = [x.p for i,x in enumerate(self.robots) if x.p[0] < self.R//2 and x.p[1] > self.C//2]
 		qSE = [x.p for i,x in enumerate(self.robots) if x.p[0] > self.R//2 and x.p[1] > self.C//2]
-		#return (qNW, qNE, qSW, qSE)
 		return(len(qNW), len(qNE), len(qSW), len(qSE))
-	def calc_av_dist(self):
-		import itertools as it
-		d = 0
-		for xy in it.combinations(self.robots, 2):
-			r1, r2 = xy
-			d += (r1.p[0]-r2.p[0])**2 + (r1.p[1]-r2.p[1])**2
-		return d
+	def scaled_entropy(self): # (Scaled) Shannon entropy across the four quadrants
+		c4 = self.count()
+		import math
+		try:
+			return -sum([math.log(x) for x in c4])
+		except ValueError:
+			return 0
 	def repr(self):
 		repr = [['.' for _ in range(self.R)] for _ in range(self.C)]
-		#print(repr)
 		xR = 0
 		xC = 0
 		for robot in self.robots:
-			#print(robot.p)
 			repr[robot.p[1]][robot.p[0]] = 'X'
 			xR = max(xR, robot.p[1])
 			xC = max(xC, robot.p[0])
 		return repr
 	def display(self):
 		print('\n'.join([''.join(x) for x in self.repr()]))
-		#return [''.join(x) for x in repr]
-		#print(repr)
-		#print('\n'.join(repr))
 
 
 
@@ -77,14 +79,13 @@ sample_input = ['p=0,4 v=3,-3',
 				'p=9,5 v=-3,-3']
 
 actual_input = open('c:/temp/day14_input.txt').read().split('\n')[:-1]
-#print(actual_input)
+
 def part1(R = 101, C = 103, niters = 100):
 	space = Space(R, C)
 	for rstr in actual_input:
 		space.add_robot(Robot(rstr))
 	for i in range(niters):
 		space.update()
-	#print(space.count())
 	def mul(alist):
 		p = 1
 		for x in alist:
@@ -92,5 +93,24 @@ def part1(R = 101, C = 103, niters = 100):
 		return p
 	print('Part 1 answer is', mul(space.count()))
 
+
+def part2(R = 101, C = 103, niters = 100):
+	space = Space(R, C)
+	for rstr in actual_input:
+		space.add_robot(Robot(rstr))
+	H = []
+	for i in range(niters):
+		H.append(space.scaled_entropy())
+		space.update()
+	ans2 = [i for i,x in enumerate(H) if x == max(H)][0]
+	# Reset to draw output
+	space = Space(R, C)
+	for rstr in actual_input:
+		space.add_robot(Robot(rstr))
+	for i in range(ans2):
+		space.update()
+	space.display()
+	print(f'Minimum entropy across four quadrants occurs at N = {ans2}')
 if __name__ == '__main__':
+	part2(niters=N)
 	part1()
