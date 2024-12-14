@@ -8,6 +8,7 @@
 /_/ |_\_,_/|___/\__/_//_/\__/  \___/_/   \___/\___/\_,_/\__/ 
                                                              
 ```
+* ASCII letters courtesy of patorjk.com/software/taag/
 
 Day 6 part 2 was the first puzzle where the answer wasn't instantaneously solvable with the right algo. I had some troubles with the python negative index pitfall.
 
@@ -15,4 +16,5 @@ TIL: Using python classes takes more time up-front but is easier when it's time 
 
 Day 9 (defragmentation), part 2 was the hardest so far (for me). I came up with the method just after finishing part 1, which was updating a rle representation (including concatentation of consecutive dot representation). However, I got stuck on debugging the indices and lengths, but finally got there.
 
-* ASCII letters courtesy of patorjk.com/software/taag/
+Day 12 onwards I've started using pytest to organise testing of each day's code
+
