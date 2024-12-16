@@ -1,5 +1,3 @@
-import pdb
-
 class Path():
     def __init__(self, score, ops):
         self.score = score
@@ -14,6 +12,7 @@ class Path():
         new_path.score = new_path.score + score_increment
         new_path.ops = new_path.ops + [nxt_op,]
         return new_path
+
 class OrientedPosition():
     def __init__(self, position, direction):
         self.position = position
@@ -27,6 +26,7 @@ class OrientedPosition():
     def __repr__(self):
         dir_repr = {0: 'N', 1: 'E', 2: 'S', 3: 'W'}
         return f'{self.position}/{dir_repr[self.direction]}'
+
 class Maze():
     def __init__(self,inp):
         self.inp = inp
@@ -65,72 +65,42 @@ class Maze():
         # as there are multiple minimum-cost ways to get to certain states.
         self.lowest_score = {}
 
-#        cur = (self.locate_start(), 1) # 0 represents north, 1 east, etc.
         cur_op = OrientedPosition(self.locate_start(), 1) # 0 represents north, 1 east, etc.
         
         # Assume there is no reason for doing a 180 degree turn at any time.
         # Even if we have reached a dead end, it would have been cheaper to 
         # have turned the other way at the nearest intersection than to have 
         # turned 180 degrees and walked backwards.
-#        self.lowest_score[cur] = [0, [cur,]]
         self.lowest_score[cur_op] = [Path(0, [cur_op,]),]
         nxt = [cur_op,] # list of next positions/directions to traverse
         while len(nxt) > 0:
             cur = nxt.pop(0)
-            if cur.position == (9,3) and cur.direction == 0:
-                pass#pdb.set_trace()
-#            cur_pos = cur[0]
-#            cur_dir = cur[1]
 
             for delta_dir in [-1, 0, 1]: # i.e anti-clockwise turn, straight, and clockwise turn
-#                nxt_dir = (curdir + delta_dir) % 4
                 nxt_dir = (cur.direction + delta_dir) % 4
-#                nxt_pos = self._get_nxt_pos(cur_pos, 
-#                                            nxt_dir)
                 nxt_op = OrientedPosition(self._get_nxt_pos(cur.position,
                                                          nxt_dir),
                                           nxt_dir)
                 if self._what(nxt_op.position) in ['.', 'E']:
-                    #pdb.set_trace()
-#                    if (nxt_pos, nxt_dir) not in self.lowest_score:
                     if nxt_op not in self.lowest_score: # We haven't reached this yet
                                                         # Always add this to minimum-cost dict
-#                        self.lowest_score[(nxt_pos, nxt_dir)] = [self.lowest_score[(cur_pos, cur_dir)][0]+\
-#                            1 + 1000*(cur_dir != nxt_dir),]
-
-#                        nxt_score = self.lowest_score[cur][0].score + 1 + 1000*(cur.direction != nxt_op.direction)
-                        # Add new score and next position/direction to lowest_score dict
-#                        nxt_path = self.lowest_score[cur][0].next(1 + 1000*(cur.direction != nxt_op.direction), # score increment
-#                                                                  nxt_op)
                         nxt_paths = [cur_paths.next(1 + 1000*(cur.direction != nxt_op.direction), # score increment
                                                     nxt_op) for cur_paths in self.lowest_score[cur]]
                         self.lowest_score[nxt_op] = nxt_paths
 
                         # Add to list of next positions to traverse, unless we are at the end
-#                        nxt.append((nxt_pos, nxt_dir))
                         if self._what(nxt_op.position) != 'E':
                             nxt.append(nxt_op)
-#                    elif True:#self.lowest_score[(nxt_pos, nxt_dir)][0] > self.lowest_score[(cur_pos, cur_dir)][0]+\
-#                            #1 + 1000*(cur_dir != nxt_dir):
                     elif self.lowest_score[nxt_op][0].score == self.lowest_score[cur][0].score + 1 + 1000*(cur.direction != nxt_op.direction):
-
-                        #pdb.set_trace()
                         # Equal cost way of getting here
-                        pass
                         nxt_paths = [cur_paths.next(1 + 1000*(cur.direction != nxt_op.direction), # score increment
                                                     nxt_op) for cur_paths in self.lowest_score[cur]]
                         self.lowest_score[nxt_op] += nxt_paths
-
-#                        self.lowest_score[(nxt_pos, nxt_dir)] = [self.lowest_score[(cur_pos, cur_dir)][0]+\
-#                            1 + 1000*(cur_dir != nxt_dir),]
-#                        nxt.append((nxt_pos, nxt_dir))
                         if self._what(nxt_op.position) != 'E':
                             if nxt_op not in nxt:
                                 nxt.append(nxt_op)
                     elif self.lowest_score[nxt_op][0].score > self.lowest_score[cur][0].score + 1 + 1000*(cur.direction != nxt_op.direction):
-                        #pdb.set_trace()
                         # This is a better way of getting here
-                        pass
                         nxt_paths = [cur_paths.next(1 + 1000*(cur.direction != nxt_op.direction), # score increment
                                                     nxt_op) for cur_paths in self.lowest_score[cur]]
                         self.lowest_score[nxt_op] = nxt_paths
@@ -140,18 +110,9 @@ class Maze():
                     else: # Already a better way to get to the next square, do not add to nxt
                         continue
 
-                    #pdb.set_trace()
-                    # Add to lowest_score
-#                    self.lowest_score[(nxt_pos, nxt_dir)].append(self.lowest_score[(cur_pos, cur_dir)][1] + [(nxt_pos, nxt_dir),])
-
-
-
                 else: # hit a wall
                     pass
 
-            #print(nxt)
-        #print(self.lowest_score)
-        #pdb.set_trace()
         import numpy as np
         final_paths = []
         min_score = np.inf
@@ -167,8 +128,6 @@ class Maze():
                 min_score = final_score
             elif final_score == min_score:
                 final_paths += [x for x in self.lowest_score[op]]
-
-#        final_paths = {k: v for k,v in self.lowest_score.items() if k[0] == self.locate_end() and v[0] == min_score}
         return min_score, final_paths
             
             
@@ -194,8 +153,6 @@ if __name__ == '__main__':
     ans = maze.traverse()
     actual_part1_answer = ans[0]
     print(f'Part 1 answer is {actual_part1_answer}. Done in {time.time()-tt:.1f}s')
-
-    #print(ans[1])
 
     tt = time.time()
     print(f'Part 2 answer is {part2(actual_input)}. Done in {time.time()-tt:.1f}s')
