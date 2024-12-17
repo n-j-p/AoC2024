@@ -18,3 +18,6 @@ Day 9 (defragmentation), part 2 was the hardest so far (for me). I came up with 
 
 Day 12 onwards I've started using pytest to organise testing of each day's code
 
+Day 15, part 2: I have some ideas how to code this up...
+
+Day 17: I really have no idea how to approach part 2.
