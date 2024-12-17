@@ -133,6 +133,35 @@ class Warehouse():
 			#print(ci)
 			c += ci
 		return c
+	def interactive(self):
+		import msvcrt 
+		print(self)
+		self.move_list = ''
+		while True:
+			symbol = ''
+			key = ord(msvcrt.getch())
+			if key == 27:
+				return
+			if key == 224: #Special keys (arrows, f keys, ins, del, etc.)
+				key = ord(msvcrt.getch())
+				if key == 80: #Down arrow
+					#print('down arrow')
+					symbol = 'v'
+				elif key == 72: #Up arrow
+					#print('up arrow')
+					symbol = '^'
+				elif key == 77:
+					#print('right arrow')
+					symbol = '>'
+				elif key == 75:
+					#print('left arrow')
+					symbol = '<'
+			
+			if len(symbol) > 0:
+				self.move_list += symbol
+				#print(self.move_list)
+				self.update()
+				print(self)
 
 def part1(inp, VERBOSE=True):
 	warehouse = Warehouse(*parse_input(inp))
