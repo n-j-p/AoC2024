@@ -21,3 +21,5 @@ Day 12 onwards I've started using pytest to organise testing of each day's code
 Day 15, part 2: Complete. day15_part2_interactive.py provides an interactive version of the problem!
 
 Day 17: I really have no idea how to approach part 2.
+
+Day 18: no testing, and brute force for part 2 :-O
