@@ -35,9 +35,11 @@ class Race():
         if pt[0] != 0 and pt[1] != 0 and pt[0] != self.C-1 and pt[1] != self.R-1:
             return True
         return False
-    def traverse(self, start_from):
+    def traverse(self, start_from, with_path = False):
         seen = {start_from: 0}
         nxt = [start_from,]
+        if with_path:
+            path = {start_from: (start_from,)}
         while len(nxt) > 0:
             cur = nxt.pop(0)
             for delta in [(-1,0),(0,-1),(1,0),(0,1)]:
@@ -45,8 +47,12 @@ class Race():
                 if newpt not in self.walls: 
                     if newpt not in seen or seen[newpt] > seen[cur] + 1:
                         seen[newpt] = seen[cur] + 1
+                        if with_path:
+                            path[newpt] = path[cur] + (newpt,)
                         nxt.append(newpt)
         self.seen = seen
+        if with_path:
+            self.path = path
         return seen
     def traverse_both(self):
         self.from_start = self.traverse(self.start)
@@ -112,7 +118,45 @@ def get_part1_answer(input, threshold):
             c += count
     return c
 
+def part2(input, max_cheat_length):
+    import itertools as it
+    from collections import Counter
+    import tqdm
+
+
+    race = Race(input)
+    race.traverse(race.start, with_path = True)   
+
+    def d(x,y): # Manhattan distance
+        return abs(x[0]-y[0]) + abs(x[1]-y[1])
+
+    cheat_times = Counter()
+    # Loop through all 2-combinations along shortest path:
+    N = len(race.path[race.end])
+    for xy in tqdm.tqdm(it.combinations(race.path[race.end], 2), 
+                        total=N*(N-1)//2):
+        # A combination is a possible cheat if the two points are
+        # not consecutive points and the Manhattan distance is
+        # lte the maximum length
+        if d(*xy) > 1 and d(*xy) <= max_cheat_length:
+            # The two points are an actual cheat if the distance
+            # to travel along it (i.e. d) is less than the 
+            # path distance between the two points: 
+            if race.seen[xy[1]] - race.seen[xy[0]] > d(*xy):
+                cheat_times.update((race.seen[xy[1]] - race.seen[xy[0]] - d(*xy),))
+    return set([(v,k) for k,v in cheat_times.items()])
+
+
 if __name__ == '__main__':
     tt = time.time()
     actual_input = open('c:/temp/day20_input.txt').read().split('\n')[:-1]
     print(f'Part 1 answer is {get_part1_answer(actual_input, 100)}. Done in {time.time()-tt:.1f}s')
+
+    print('Calculating part 2...')
+    actual_times = part2(actual_input,20)
+    st_100 = set(())
+    for count, time in actual_times:
+        if time >= 100:
+            st_100.add((count, time))
+    print('Part 2 actual answer is',sum([x[0] for x in st_100]))
+

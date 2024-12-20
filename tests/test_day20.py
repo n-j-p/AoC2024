@@ -47,3 +47,47 @@ def test_part1():
     
 def test_part1_answer():
     assert day20.get_part1_answer(sample_input, 0) == 44
+
+def test_part2_on_part1_sample():
+    # Test whether we get the same distribution of cheat times
+    # from part1() function and part2() function
+    sample_times = day20.part2(sample_input,2)
+    print(sample_times)
+    print(day20.part1(sample_input))
+    assert sample_times == day20.part1(sample_input)
+    
+
+def test_part2_actual():
+    # Check whether we get the same actual answer with part2() 
+    # and get_part1_answer()
+    actual_input = open('c:/temp/day20_input.txt').read().split('\n')[:-1]
+    part1_cheats = day20.part2(actual_input, 2)
+    c = 0
+    for count, time in part1_cheats:
+        if time >= 100:
+            c += count
+    print(c)
+    assert day20.get_part1_answer(actual_input, 100) == c
+    
+def test_part2_sample_answer():
+
+    sample_times = day20.part2(sample_input,20)
+    st_50 = set(())
+    for count, time in sample_times:
+        if time >= 50:
+            print(count, time)
+            st_50.add((count, time))
+    assert st_50 == set(((32, 50),
+                         (31, 52),
+                         (29, 54),
+                         (39, 56),
+                         (25, 58),
+                         (23, 60),
+                         (20, 62),
+                         (19, 64),
+                         (12, 66),
+                         (14, 68),
+                         (12, 70),
+                         (22, 72),
+                         (4, 74),
+                         (3, 76)))
