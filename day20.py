@@ -119,6 +119,8 @@ def get_part1_answer(input, threshold):
     return c
 
 def part2(input, max_cheat_length):
+    # Not gonna lie, I got my idea from this:
+    # https://www.reddit.com/r/adventofcode/comments/1hiepjo/2024_day_20_part_2_spoiler_sneaky_cheats_are/
     import itertools as it
     from collections import Counter
     import tqdm
