@@ -24,21 +24,11 @@ def test_other_examples():
     # This should do nothing:
     # The way it is set up it just adds two to the fastest time.
     assert race.remove_single_pt((6,10)) > 84
-    #print(race.remove_single_pt((6,10)))
+    # So we can ignore any result that produces a slower time.
 
     assert race.remove_single_pt((10,8)) == 84 - 2
-
     assert race.remove_single_pt((2,11)) == 84 - 4
-    # This is not equivalent to:
-    #assert race.remove_two_pts(((2,11),(2,12))) == 84 - 4
-    # due to the extra step added (it is assumed that
-    # we step on both squares removed).
     assert race.remove_single_pt((2,12)) == 84 - 2
-    # However, due to the description that
-    # "cheats are uniquely identified by their start position and end position."
-    # We should be able to disregard this one?
-    # Namely, if a double removal doesn't result in a faster cheat than
-    # both single removals, we won't include it.
 
 def test_part1():
     print('Part 1 savings:')
