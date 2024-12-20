@@ -56,6 +56,19 @@ class Maze():
         else:
             raise ValueError('Unknown direction, should be 0-3')
         return nxt_pos
+    def _update_lowest_score(self, nxt_op, cur, score_increment, addto = False):
+        # Update the lowest score path at nxt_op.
+        # We add score_increment and the OrientedPosition to the
+        # current path.
+        # addto is True when we have an equal cost way of getting
+        # to the relevant point. 
+        nxt_paths = [cur_paths.next(score_increment,
+                                    nxt_op) for cur_paths in \
+                        self.lowest_score[cur]]
+        if addto:
+            self.lowest_score[nxt_op] += nxt_paths
+        else:
+            self.lowest_score[nxt_op] = nxt_paths
     def traverse(self):
         '''Traverse the map as a tree. 
         Keep track of position and orientation.'''
@@ -63,55 +76,61 @@ class Maze():
         # We'll do this with a dictionary: keys hold OrientedPositions instances (position and
         # directions), and items are minimum cost path(s) getting there. This needs to be a list
         # as there are multiple minimum-cost ways to get to certain states.
-        self.lowest_score = {}
 
-        cur_op = OrientedPosition(self.locate_start(), 1) # 0 represents north, 1 east, etc.
-        
         # Assume there is no reason for doing a 180 degree turn at any time.
         # Even if we have reached a dead end, it would have been cheaper to 
         # have turned the other way at the nearest intersection than to have 
         # turned 180 degrees and walked backwards.
+
+        self.lowest_score = {}
+
+        cur_op = OrientedPosition(self.locate_start(), 1) # 0 represents north, 1 east, etc.
+        
         self.lowest_score[cur_op] = [Path(0, [cur_op,]),]
         nxt = [cur_op,] # list of next positions/directions to traverse
         while len(nxt) > 0:
             cur = nxt.pop(0)
 
             for delta_dir in [-1, 0, 1]: # i.e anti-clockwise turn, straight, and clockwise turn
+                                         # as mentioned above, do not consider 180 degree turns at all.
                 nxt_dir = (cur.direction + delta_dir) % 4
                 nxt_op = OrientedPosition(self._get_nxt_pos(cur.position,
                                                          nxt_dir),
                                           nxt_dir)
                 if self._what(nxt_op.position) in ['.', 'E']:
+                    # 1000 penalty for turning is included in the score increment:
+                    score_increment = 1 + 1000*(cur.direction != nxt_op.direction)
+
                     if nxt_op not in self.lowest_score: # We haven't reached this yet
                                                         # Always add this to minimum-cost dict
-                        nxt_paths = [cur_paths.next(1 + 1000*(cur.direction != nxt_op.direction), # score increment
-                                                    nxt_op) for cur_paths in self.lowest_score[cur]]
-                        self.lowest_score[nxt_op] = nxt_paths
+                        self._update_lowest_score(nxt_op, cur, score_increment)
 
-                        # Add to list of next positions to traverse, unless we are at the end
+                        # Add to list of next positions to traverse, unless we are at the end of the maze
                         if self._what(nxt_op.position) != 'E':
                             nxt.append(nxt_op)
-                    elif self.lowest_score[nxt_op][0].score == self.lowest_score[cur][0].score + 1 + 1000*(cur.direction != nxt_op.direction):
+
+                    elif self.lowest_score[nxt_op][0].score == self.lowest_score[cur][0].score + score_increment:
                         # Equal cost way of getting here
-                        nxt_paths = [cur_paths.next(1 + 1000*(cur.direction != nxt_op.direction), # score increment
-                                                    nxt_op) for cur_paths in self.lowest_score[cur]]
-                        self.lowest_score[nxt_op] += nxt_paths
+                        # We need to include this as an alternative path (hence addto == True here)
+                        self._update_lowest_score(nxt_op, cur, score_increment, addto = True)
+
                         if self._what(nxt_op.position) != 'E':
                             if nxt_op not in nxt:
                                 nxt.append(nxt_op)
-                    elif self.lowest_score[nxt_op][0].score > self.lowest_score[cur][0].score + 1 + 1000*(cur.direction != nxt_op.direction):
-                        # This is a better way of getting here
-                        nxt_paths = [cur_paths.next(1 + 1000*(cur.direction != nxt_op.direction), # score increment
-                                                    nxt_op) for cur_paths in self.lowest_score[cur]]
-                        self.lowest_score[nxt_op] = nxt_paths
+
+                    elif self.lowest_score[nxt_op][0].score > self.lowest_score[cur][0].score + score_increment:
+                        # We have found a lower-cost way of getting here
+                        # Write over the lowest_score dictionary with the current path:
+                        self._update_lowest_score(nxt_op, cur, score_increment)
+
                         if self._what(nxt_op.position) != 'E':
                             if nxt_op not in nxt:
                                 nxt.append(nxt_op)
                     else: # Already a better way to get to the next square, do not add to nxt
-                        continue
+                        continue # move on with life.
 
                 else: # hit a wall
-                    pass
+                    pass # do nothing.
 
         import numpy as np
         final_paths = []
