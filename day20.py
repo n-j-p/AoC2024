@@ -69,36 +69,10 @@ class Race():
             except KeyError:
                 pass
         return min_from_start + min_from_end + 2
-    def remove_two_pts(self, pts):
-        assert len(pts) == 2
-        min_from_start = np.inf
-        min_from_end = np.inf
-        for pos in pts:
-            for delta in [(-1,0),(0,-1),(1,0),(0,1)]:
-                newpt = (pos[0] + delta[0], pos[1] + delta[1])
-                if newpt in self.walls:
-                    continue
-                try:
-                    min_from_start = min(min_from_start,
-                                        self.from_start[newpt])
-                except KeyError:
-                    pass
-                try:
-                    min_from_end = min(min_from_end,
-                                    self.from_end[newpt])
-                except KeyError:
-                    pass
-        return min_from_start + min_from_end + 3
     def gen_all_single_pts(self):
         for pt in self.walls:
             if self._is_interior(pt):
                 yield pt
-    def gen_all_double_pts(self):
-        for pt in self.gen_all_single_pts():
-            for delta in [(1,0),(0,1)]: # only go south and east to avoid double counting
-                pt2 = (pt[0] + delta[0], pt[1] + delta[1])
-                if self._is_interior(pt2) and pt2 in self.walls:
-                    yield (pt, pt2)
 
 
 def part1(input, VERBOSE=True):                                     
