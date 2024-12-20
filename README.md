@@ -10,6 +10,8 @@
 ```
 * ASCII letters courtesy of patorjk.com/software/taag/
 
+**Every time I think I worked out how the numbers on the Stats page relate to the numbers on the personal times page, turns out I was wrong again.**
+
 Day 6 part 2 was the first puzzle where the answer wasn't instantaneously solvable with the right algo. I had some troubles with the python negative index pitfall.
 
 TIL: Using python classes takes more time up-front but is easier when it's time to swap the actual input for the sample input. 
