@@ -129,7 +129,7 @@ def part1_semiBF(input):
     return c
 
 
-if __name__ == '__main__':
+if False:#if __name__ == '__main__':
 
     actual_seqs = ['208A',
                 '586A',
@@ -137,3 +137,79 @@ if __name__ == '__main__':
                 '463A',
                 '593A']
     print(part1_semiBF(actual_seqs))
+
+def minpath(input, depth, keypad = DirectionalKeypad):
+    if depth == 1:
+        if len(set(input).difference('^<v>A')) > 0:
+            raise Exception('Unknown characters')
+        else:
+            return len(input), input
+    if depth < 1:
+        raise Exception("Shouldn't happen")
+    else:
+            
+        kp = keypad()
+        #pdb.set_trace()
+        from numpy import inf
+        mn = inf
+        mni = -1
+        for i,seqi in enumerate(kp.gen_all_seqs(input)):
+            import pdb
+            pdb.set_trace()
+            length, next_level_input_seq = minpath(seqi, depth - 1, DirectionalKeypad) 
+            if length < mn:
+                mn_i = i
+                mn = length
+                mn_seq = next_level_input_seq
+
+        return mn, next_level_input_seq
+    
+if False:#__name__ == '__main__':
+    # Comparing recursive approach to semi-BF (sequential)
+    import time
+    sample_input = ['029A',
+                    '980A',
+                    '179A',
+                    '456A',
+                    '379A']
+    for code in sample_input:
+        tt = time.time()
+        print(code, minpath(code, 4, NumericKeypad)[0], f'{time.time()-tt:.1f}s')
+    print()
+    print(part1_semiBF(sample_input))
+    # So the recursive approach is an order of magnitude slower, but
+    # we can extend this for arbitrary levels and memoise.
+
+if __name__ == '__main__':
+    dkp = DirectionalKeypad()
+    print(dkp.gen_positions('<>^vA'))
+    keypad_transitions = ['A',]
+    for x in it.permutations(dkp.gen_positions('<>^vA')[1:], 2):
+        #print(x)
+        fx = list(dkp._fill_in(*x))
+        rpos2 = {(-1,0): '^',
+                 (1,0): 'v',
+                 (0,-1): '<',
+                 (0,1): '>',
+                 (0,0): ''}
+        def dxy(p1,p2):
+            return (p1[0]-p2[0],p1[1]-p2[1])
+        rpos = {v:k for k,v in dkp.positions.items()}
+        for i,fxi in enumerate(fx):
+            # for j, fxj in enumerate(fxi[1:]):
+            #     print('xxx',j,fxj,fxi[j],dxy(fxj,fxi[j]),rpos2[dxy(fxj,fxi[j])])
+            fstr = [rpos2[dxy(fxj, fxi[j])] for j,fxj in enumerate(fxi[1:])]
+            #print(x,fx,i,fxi,fstr)
+            print(x,[rpos[p] for p in x], ''.join(fstr))
+                #print(x, fx, fxi, fxj, fstr)
+    #              minpath(tuple(dkp._fill_in(*x)),1))
+            keypad_transitions.append(''.join(fstr) + 'A')
+    print(keypad_transitions)
+    DP = {}
+    for xy in keypad_transitions:
+        res = minpath(xy, depth=1)
+        DP[(xy, 1)] = res
+        #print(xy, minpath(xy, depth=4))
+    print(DP)
+    print('xxxxxxxxxxxxx',xy)
+    print(minpath(xy, depth = 2))
