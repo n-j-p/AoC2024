@@ -137,13 +137,13 @@ def minpath(input, depth, DP = {}, keypad = DirectionalKeypad):
         import pdb
         #pdb.set_trace()
         #DP_lkups.update(((input, depth),))
-        return DP[(input, depth)][0], DP[(input, depth)][1], DP
+        return DP[(input, depth)][0], '', DP#DP[(input, depth)][1], DP
         pass
     if depth == 1:
         if len(set(input).difference('^<v>A')) > 0:
             raise Exception('Unknown characters')
         else:
-            return len(input), input, DP
+            return len(input), '', DP
     if depth < 1:
         raise Exception("Shouldn't happen")
     else:
@@ -172,8 +172,8 @@ def minpath(input, depth, DP = {}, keypad = DirectionalKeypad):
                 mn = reconstructed_length
                 mn_seq = reconstructed_seq
 
-        DP[(input, depth)] = (mn, mn_seq)
-        return mn, mn_seq, DP
+        DP[(input, depth)] = (mn, '')
+        return mn, '', DP
     
 
 def part2_recursive(input, depth = 3, VERBOSE = True):
@@ -211,12 +211,12 @@ if __name__ == '__main__':
                 '341A',
                 '463A',
                 '593A']
-    ans = part1_semiBF(actual_input)
-    print(f'Part 1 answer = {ans}. Done in {time.time()-tt:.1f}s')
+    #ans = part1_semiBF(actual_input)
+    #print(f'Part 1 answer = {ans}. Done in {time.time()-tt:.1f}s')
     print("Using part 2 method:")
     print(part2_recursive(actual_input, VERBOSE=False))
 
     tt = time.time()
     print()
-    ans = part2_recursive(actual_input, depth = 25, VERBOSE=False)
+    ans = part2_recursive(actual_input, depth = 26, VERBOSE=False)
     print(f'Part 2 answer = {ans}. Done in {time.time()-tt:.1f}s')
