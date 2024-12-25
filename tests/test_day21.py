@@ -137,7 +137,7 @@ def test_directional_keypad2():
     seqs2 = it.chain.from_iterable([dkp2.gen_all_seqs(s1) for s1 in seqs1])
     assert '<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A' in seqs2
 
-def test_sample_input():
+def test_sample_input_part1_function():
     sample_seqs = ['029A',
                    '980A',
                    '179A',
@@ -157,7 +157,7 @@ def test_sample_input_recursive_function():
     assert day21.part2_recursive(sample_seqs) == 126384
 
 
-def test_sample_input_recursive_function_depth15():
+def test_run_sample_input_recursive_function_depth15():
     sample_seqs = ['029A',
                    '980A',
                    '179A',
@@ -166,21 +166,29 @@ def test_sample_input_recursive_function_depth15():
     
     day21.part2_recursive(sample_seqs, depth = 15) 
 
+def test_run_sample_input_recursive_function_depth25():
+    sample_seqs = ['029A',
+                   '980A',
+                   '179A',
+                   '456A',
+                   '379A']
+    
+    day21.part2_recursive(sample_seqs, depth = 25) 
+
 def tt_actual_input_recursive_function(depth):
 
     actual_seqs = ['208A',
-                '586A',
-                '341A',
-                '463A',
-                '593A']
+                   '586A',
+                   '341A',
+                   '463A',
+                   '593A']
     return day21.part2_recursive(actual_seqs, depth) 
 
 def test_actual_input_recursive_function_depth3():
     assert tt_actual_input_recursive_function(3) == 155252
 
-
-def test_actual_input_recursive_function_depth10():
+def test_run_actual_input_recursive_function_depth10():
     print(tt_actual_input_recursive_function(10))
 
-def test_actual_input_recursive_function_depth15():
+def test_run_actual_input_recursive_function_depth15():
     print(tt_actual_input_recursive_function(15))

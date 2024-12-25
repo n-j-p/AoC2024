@@ -38,14 +38,9 @@ class Keypad():
     def gen_seq(self, code):
         all_seqs = []
         cps = self.gen_positions(code)
-        #print('*****')
-        #print(cps)
-        #print('*****')
         for i,x in enumerate(cps[1:]):
             seqi = list(self._fill_in(cps[i], x))
-            #print(f'{cps[i]} -> {x}', seqi)
             all_seqs.append(seqi)
-        #print(all_seqs)
         for seq in it.product(*all_seqs):
             yield seq
     def _conv_to_str(self, seq):
@@ -53,7 +48,6 @@ class Keypad():
         dirstr = ''
         for step in seq:
             for mv in step:
-                #print(mv)
                 dy = mv[0]-last[0]
                 dx = mv[1]-last[1]
                 if dx == 1:
@@ -132,11 +126,8 @@ def part1_semiBF(input):
 
 def minpath(input, depth, DP = {}, keypad = DirectionalKeypad):
     import pdb
-    #pdb.set_trace()
     if (input, depth) in DP and depth > 1:
         import pdb
-        #pdb.set_trace()
-        #DP_lkups.update(((input, depth),))
         return DP[(input, depth)][0], '', DP#DP[(input, depth)][1], DP
         pass
     if depth == 1:
@@ -149,17 +140,12 @@ def minpath(input, depth, DP = {}, keypad = DirectionalKeypad):
     else:
             
         kp = keypad()
-#        pdb.set_trace()
         from numpy import inf
         mn = inf
         mni = -1
-        #for i, bseqi in enumerate(input.replace('A','A~').split('~')[:-1]):
-        #    pass
 
 
         for i,seqi in enumerate(kp.gen_all_seqs(input)):
-            import pdb
-            #pdb.set_trace()
             broken_seqi = seqi.replace('A','A~').split('~')[:-1]
             reconstructed_seq = ''
             reconstructed_length = 0
@@ -177,7 +163,7 @@ def minpath(input, depth, DP = {}, keypad = DirectionalKeypad):
     
 
 def part2_recursive(input, depth = 3, VERBOSE = True):
-    import time, pdb, tqdm
+    import time, tqdm
 
     DP = {}
 
@@ -207,10 +193,10 @@ if __name__ == '__main__':
 
     tt = time.time()
     actual_input = ['208A',
-                '586A',
-                '341A',
-                '463A',
-                '593A']
+                    '586A',
+                    '341A',
+                    '463A',
+                    '593A']
     #ans = part1_semiBF(actual_input)
     #print(f'Part 1 answer = {ans}. Done in {time.time()-tt:.1f}s')
     print("Using part 2 method:")
