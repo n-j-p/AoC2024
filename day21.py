@@ -1,3 +1,4 @@
+import pdb
 import itertools as it
 from tqdm import tqdm
 class Keypad():
@@ -104,7 +105,7 @@ class DirectionalKeypad(Keypad):
     
 
 def part1_semiBF(input):
-    import time
+    import time, pdb
     c = 0
     for seq in input:
         tt = time.time()
@@ -129,87 +130,93 @@ def part1_semiBF(input):
     return c
 
 
-if False:#if __name__ == '__main__':
-
-    actual_seqs = ['208A',
-                '586A',
-                '341A',
-                '463A',
-                '593A']
-    print(part1_semiBF(actual_seqs))
-
-def minpath(input, depth, keypad = DirectionalKeypad):
+def minpath(input, depth, DP = {}, keypad = DirectionalKeypad):
+    import pdb
+    #pdb.set_trace()
+    if (input, depth) in DP and depth > 1:
+        import pdb
+        #pdb.set_trace()
+        #DP_lkups.update(((input, depth),))
+        return DP[(input, depth)][0], DP[(input, depth)][1], DP
+        pass
     if depth == 1:
         if len(set(input).difference('^<v>A')) > 0:
             raise Exception('Unknown characters')
         else:
-            return len(input), input
+            return len(input), input, DP
     if depth < 1:
         raise Exception("Shouldn't happen")
     else:
             
         kp = keypad()
-        #pdb.set_trace()
+#        pdb.set_trace()
         from numpy import inf
         mn = inf
         mni = -1
+        #for i, bseqi in enumerate(input.replace('A','A~').split('~')[:-1]):
+        #    pass
+
+
         for i,seqi in enumerate(kp.gen_all_seqs(input)):
             import pdb
-            pdb.set_trace()
-            length, next_level_input_seq = minpath(seqi, depth - 1, DirectionalKeypad) 
-            if length < mn:
+            #pdb.set_trace()
+            broken_seqi = seqi.replace('A','A~').split('~')[:-1]
+            reconstructed_seq = ''
+            reconstructed_length = 0
+            for bseqi in broken_seqi:
+                length, next_level_input_seq, DP = minpath(bseqi, depth - 1, DP, DirectionalKeypad) 
+                reconstructed_length += length
+                reconstructed_seq += next_level_input_seq
+            if reconstructed_length < mn:
                 mn_i = i
-                mn = length
-                mn_seq = next_level_input_seq
+                mn = reconstructed_length
+                mn_seq = reconstructed_seq
 
-        return mn, next_level_input_seq
+        DP[(input, depth)] = (mn, mn_seq)
+        return mn, mn_seq, DP
     
-if False:#__name__ == '__main__':
-    # Comparing recursive approach to semi-BF (sequential)
-    import time
-    sample_input = ['029A',
-                    '980A',
-                    '179A',
-                    '456A',
-                    '379A']
-    for code in sample_input:
-        tt = time.time()
-        print(code, minpath(code, 4, NumericKeypad)[0], f'{time.time()-tt:.1f}s')
+
+def part2_recursive(input, depth = 3, VERBOSE = True):
+    import time, pdb, tqdm
+
+    DP = {}
+
+    c = 0
     print()
-    print(part1_semiBF(sample_input))
-    # So the recursive approach is an order of magnitude slower, but
-    # we can extend this for arbitrary levels and memoise.
+    for seq in tqdm.tqdm(input):
+        tt = time.time()
+        nkp = NumericKeypad()
+        if VERBOSE:
+            print()
+            print(seq)
+            print("-----------")
+        seqs0 = nkp.gen_all_seqs(seq)
+        from numpy import inf
+        mn = inf
+        for seq0 in seqs0:
+            mn_i, _, DP = minpath(seq0, depth, DP)
+            if VERBOSE: print(seq0, mn_i)
+            mn = min(mn, mn_i)
+        if VERBOSE: print(mn, int(seq[:-1]), mn*int(seq[:-1]))
+        c += mn * int(seq[:-1])
+    return c
 
 if __name__ == '__main__':
-    dkp = DirectionalKeypad()
-    print(dkp.gen_positions('<>^vA'))
-    keypad_transitions = ['A',]
-    for x in it.permutations(dkp.gen_positions('<>^vA')[1:], 2):
-        #print(x)
-        fx = list(dkp._fill_in(*x))
-        rpos2 = {(-1,0): '^',
-                 (1,0): 'v',
-                 (0,-1): '<',
-                 (0,1): '>',
-                 (0,0): ''}
-        def dxy(p1,p2):
-            return (p1[0]-p2[0],p1[1]-p2[1])
-        rpos = {v:k for k,v in dkp.positions.items()}
-        for i,fxi in enumerate(fx):
-            # for j, fxj in enumerate(fxi[1:]):
-            #     print('xxx',j,fxj,fxi[j],dxy(fxj,fxi[j]),rpos2[dxy(fxj,fxi[j])])
-            fstr = [rpos2[dxy(fxj, fxi[j])] for j,fxj in enumerate(fxi[1:])]
-            #print(x,fx,i,fxi,fstr)
-            print(x,[rpos[p] for p in x], ''.join(fstr))
-                #print(x, fx, fxi, fxj, fstr)
-    #              minpath(tuple(dkp._fill_in(*x)),1))
-            keypad_transitions.append(''.join(fstr) + 'A')
-    print(keypad_transitions)
-    DP = {}
-    for xy in keypad_transitions:
-        res = minpath(xy, depth=1)
-        DP[(xy, 1)] = res
-        #print(xy, minpath(xy, depth=4))
-    print(DP)
-    print('xxxxxxxxxxxxx',xy)
-    print(minpath(xy, depth = 2))
+    import time
+
+
+    tt = time.time()
+    actual_input = ['208A',
+                '586A',
+                '341A',
+                '463A',
+                '593A']
+    ans = part1_semiBF(actual_input)
+    print(f'Part 1 answer = {ans}. Done in {time.time()-tt:.1f}s')
+    print("Using part 2 method:")
+    print(part2_recursive(actual_input, VERBOSE=False))
+
+    tt = time.time()
+    print()
+    ans = part2_recursive(actual_input, depth = 25, VERBOSE=False)
+    print(f'Part 2 answer = {ans}. Done in {time.time()-tt:.1f}s')

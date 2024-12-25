@@ -147,3 +147,40 @@ def test_sample_input():
     assert day21.part1_semiBF(sample_seqs) == 126384
 
 
+def test_sample_input_recursive_function():
+    sample_seqs = ['029A',
+                   '980A',
+                   '179A',
+                   '456A',
+                   '379A']
+    
+    assert day21.part2_recursive(sample_seqs) == 126384
+
+
+def test_sample_input_recursive_function_depth15():
+    sample_seqs = ['029A',
+                   '980A',
+                   '179A',
+                   '456A',
+                   '379A']
+    
+    day21.part2_recursive(sample_seqs, depth = 15) 
+
+def tt_actual_input_recursive_function(depth):
+
+    actual_seqs = ['208A',
+                '586A',
+                '341A',
+                '463A',
+                '593A']
+    return day21.part2_recursive(actual_seqs, depth) 
+
+def test_actual_input_recursive_function_depth3():
+    assert tt_actual_input_recursive_function(3) == 155252
+
+
+def test_actual_input_recursive_function_depth10():
+    print(tt_actual_input_recursive_function(10))
+
+def test_actual_input_recursive_function_depth15():
+    print(tt_actual_input_recursive_function(15))
