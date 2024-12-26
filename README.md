@@ -25,3 +25,5 @@ Day 15, part 2: Complete. day15_part2_interactive.py provides an interactive ver
 Day 17: I really have no idea how to approach part 2.
 
 Day 18: no testing, and brute force for part 2 :-O
+
+I got 42* by the end of the timed competition (+24 hours after last puzzle release).
