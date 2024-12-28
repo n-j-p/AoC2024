@@ -35,7 +35,7 @@ def gen_diffs(secret):
         yield num - last
         last = num
 
-    
+# Function nont really needed...
 def occurrence(secret, seq, maxn=2000):
     assert seq.__class__ == list
     from collections import deque
@@ -50,35 +50,6 @@ def occurrence(secret, seq, maxn=2000):
         if list(test) == list(seq):
             return last_price
     return None
-
-# def get_unique_occurrences(secret, maxn=2000):
-#     qoccs = set(())
-#     #assert seq.__class__ == list
-#     from collections import deque
-#     seq = deque(maxlen=4)
-#     last_price = None
-#     g = gen_diffs(secret)
-#     # last_price = secret % 10
-#     for i in range(maxn):
-#         diff = next(g)
-#         # last_price = last_price + diff
-#         seq.append(diff)
-#         qoccs.add(tuple(seq))
-#     return qoccs
-# def get_order(secret):
-#     first = secret
-#     num = evolve(first)
-#     i = 1
-#     while num != first:
-#         i += 1
-#         num = evolve(num) 
-#     return i
-# def part2_BF():
-#     import tqdm
-#     import itertools as it
-#     for x in tqdm.tqdm(it.product(range(-9,10),repeat=4),
-#                        total=19**4):
-#         y = occurrence(1,list(x))        
 
 
 def iterate(secret,maxn=2000):
