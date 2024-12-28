@@ -20,3 +20,22 @@ def test_prices():
     tp = [3,0,6,5,4,4,6,4,4,2]
     for i in range(10):
         assert next(g) == tp[i]
+
+def test_diffs():
+    g = day22.gen_diffs(123)
+    td = [-3,6,-1,-1,0,2,-2,0,-2]
+    for i in range(9):
+        assert next(g) == td[i]
+
+def test_occurrences():
+    assert day22.occurrence(1,[-2,1,-1,3]) == 7
+    assert day22.occurrence(2,[-2,1,-1,3]) == 7
+    assert day22.occurrence(3,[-2,1,-1,3]) is None
+    assert day22.occurrence(2024,[-2,1,-1,3]) == 9
+
+    # Test edge case:
+    assert day22.occurrence(123,[0,-2],8) is None
+    assert day22.occurrence(123,[0,-2],9) == 2
+def test_part2():
+    secrets = [1,2,3,2024]
+    assert day22.part2(secrets) == ((-2,1,-1,3),23)
