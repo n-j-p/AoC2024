@@ -35,23 +35,6 @@ def gen_diffs(secret):
         yield num - last
         last = num
 
-# Function nont really needed...
-def occurrence(secret, seq, maxn=2000):
-    assert seq.__class__ == list
-    from collections import deque
-    test = deque(maxlen=len(seq))
-    last_price = None
-    g = gen_diffs(secret)
-    last_price = secret % 10
-    for i in range(maxn):
-        diff = next(g)
-        last_price = last_price + diff
-        test.append(diff)
-        if list(test) == list(seq):
-            return last_price
-    return None
-
-
 def iterate(secret,maxn=2000):
     from collections import deque
     last4 = deque(maxlen=4)
